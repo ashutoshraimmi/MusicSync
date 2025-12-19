@@ -20,6 +20,7 @@ class SearchRepositoryImpl @Inject constructor(
         val resp = api.search(query = query)
         if (resp.isSuccessful) {
             val dto = resp.body()!!
+
             val domain = dto.toDomain()
             // map domain songs to entities and store
             val entities = domain.songs.map { it.toEntity() }

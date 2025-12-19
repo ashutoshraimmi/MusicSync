@@ -14,6 +14,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import android.R
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -23,11 +24,13 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MediumSongTile(artistName : String) {
+fun MediumSongTile(artistName : String, onclick : () -> Unit) {
     Box(modifier = Modifier
         .height(150.dp)
         .width(150.dp)
-        .background(color = Color.Gray, shape = RoundedCornerShape(16.dp))){
+        .clickable{onclick()}
+        .background(color = Color.Gray, shape = RoundedCornerShape(16.dp))
+    ){
         Column(modifier = Modifier.fillMaxHeight().padding(16.dp, 4.dp)){
 
             Row(

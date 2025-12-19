@@ -2,6 +2,7 @@ package com.ashutosh.musicsync.presentation.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -29,7 +30,9 @@ import androidx.compose.ui.unit.sp
 @Composable
 fun CustomSongBar(
     songText: String,
-    modifier: Modifier = Modifier   // ✅ default modifier
+    modifier: Modifier = Modifier   ,
+    onclick : ()->Unit
+
 ) {
     val displayText =
         if (songText.length > 15) songText.take(15) + "..."
@@ -43,8 +46,9 @@ fun CustomSongBar(
             .fillMaxWidth()
             .height(48.dp)   // ✅ default height
             .background(color = Color.Gray, shape = shape)
-            .border(1.dp, color = Color.Black, shape = shape),
-        contentAlignment = Alignment.Center
+            .border(1.dp, color = Color.Black, shape = shape)
+            .clickable{onclick()},
+        contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
@@ -71,5 +75,5 @@ fun CustomSongBar(
 @Preview
 @Composable
 fun previewCustomSongBar(){
-    CustomSongBar("ashutosh")
+    CustomSongBar("ashutosh" , onclick = {})
 }

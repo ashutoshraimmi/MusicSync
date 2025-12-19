@@ -1,6 +1,7 @@
 package com.ashutosh.musicsync.presentation.components
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -25,7 +26,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun CustomHeader(headerType: HeaderType) {
+fun CustomHeader(headerType: HeaderType, onarrowClick : ()-> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -35,13 +36,19 @@ fun CustomHeader(headerType: HeaderType) {
             is HeaderType.Home -> HomeTopBar()
 
             is HeaderType.Search -> SearchTopBar(
-                text = headerType.text
+                text = headerType.text,
+                onarrowClick={ onarrowClick() }
             )
 
-            is HeaderType.SongList -> CommonHeaderBar()
+            is HeaderType.SongList -> CommonHeaderBar(
+                onarrowClick = {
+                    onarrowClick()
+                }
+            )
 
             is HeaderType.Profile -> SearchTopBar(
-                text = headerType.text
+                text = headerType.text,
+                onarrowClick = {onarrowClick()}
             )
         }
     }
@@ -50,10 +57,12 @@ fun CustomHeader(headerType: HeaderType) {
 fun HomeTopBar(){
     LazyRow(modifier = Modifier.height(48.dp) , verticalAlignment = Alignment.CenterVertically) {
         item{
-            Box(modifier = Modifier.size(40.dp).background(
-                color = Color.DarkGray,
-                shape = CircleShape,
-            ),
+            Box(modifier = Modifier
+                .size(40.dp)
+                .background(
+                    color = Color.DarkGray,
+                    shape = CircleShape,
+                ),
                 contentAlignment = Alignment.Center){
                 Icon(Icons.Default.Person, contentDescription = "PP")
             }
@@ -83,7 +92,7 @@ fun HomeTopBar(){
     }
 }
 @Composable
-fun SearchTopBar(text : String) {
+fun SearchTopBar(text : String, onarrowClick: () -> Unit) {
     Box(
         modifier = Modifier
             .height(48.dp)
@@ -91,16 +100,22 @@ fun SearchTopBar(text : String) {
         contentAlignment = Alignment.CenterStart
     ) {
         Row() {
-            Box(modifier = Modifier.size(40.dp).background(
-                color = Color.DarkGray,
-                shape = CircleShape),
+            Box(modifier = Modifier
+                .size(40.dp)
+                .background(
+                    color = Color.DarkGray,
+                    shape = CircleShape
+                )
+                .clickable { },
                 contentAlignment = Alignment.Center,
                 )
             {
                 Icon(Icons.Default.Person, contentDescription = "PP")
             }
             Box(
-                modifier = Modifier.fillMaxHeight().padding(12.dp, 0.dp),
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .padding(12.dp, 0.dp),
                 contentAlignment = Alignment.Center
             ) {
                 Text(
@@ -116,7 +131,7 @@ fun SearchTopBar(text : String) {
 }
 
 @Composable
-fun CommonHeaderBar() {
+fun CommonHeaderBar(onarrowClick: ()-> Unit) {
     Box(
         modifier = Modifier
             .height(48.dp)
@@ -124,9 +139,13 @@ fun CommonHeaderBar() {
         contentAlignment = Alignment.CenterStart
     ) {
         Row() {
-            Box(modifier = Modifier.size(40.dp).background(
-                color = Color.DarkGray,
-                shape = CircleShape),
+            Box(modifier = Modifier
+                .size(40.dp)
+                .clickable { onarrowClick() }
+                .background(
+                    color = Color.DarkGray,
+                    shape = CircleShape
+                ),
                 contentAlignment = Alignment.Center,
             )
             {

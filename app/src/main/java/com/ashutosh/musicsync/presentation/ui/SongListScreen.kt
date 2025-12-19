@@ -1,7 +1,7 @@
 package com.ashutosh.musicsync.presentation.ui
 
+import android.util.Log
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -12,20 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Place
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -33,22 +32,34 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.room.util.query
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.ashutosh.musicsync.presentation.components.CustomHeader
 import com.ashutosh.musicsync.presentation.components.CustomSearchBar
 import com.ashutosh.musicsync.presentation.components.HeaderType
 import com.ashutosh.musicsync.presentation.components.MusicListTile
-import kotlin.math.round
+import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
+import com.google.gson.Gson
 
 @Composable
-fun SongListScreen(imageUrl: String, songDetail: String) {
-    var query by remember { mutableStateOf("") }
+fun SongListScreen(
+    onBackArrowClick: () -> Unit,
+    songType: String,
+    onsongClick : (pids : String) -> Unit,
+    viewModel: SongListViewModel = hiltViewModel()
+) {
+    var query by remember { mutableStateOf(songType) }
 
+    // ✅ Collect songs from ViewModel
+    val musicList by viewModel.songs.collectAsState()
+
+    // ✅ Trigger search only when query changes
+    LaunchedEffect(query) {
+        viewModel.onQueryChanged(query)
+    }
     val roundedShape = RoundedCornerShape(
         topStart = 16.dp,
         topEnd = 16.dp,
@@ -68,7 +79,10 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
             .padding(16.dp, 4.dp),
     ) {
         item {
-            CustomHeader(HeaderType.SongList)
+            CustomHeader(HeaderType.SongList, onarrowClick = {
+                onBackArrowClick()
+
+            })
         }
         item {
             Spacer(modifier = Modifier.height(8.dp))
@@ -90,7 +104,7 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = imageUrl,
+                    model = "imageUrl",
                     contentDescription = "Song Image",
                     modifier = Modifier
                         .height(160.dp)
@@ -103,7 +117,7 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
             Spacer(modifier = Modifier.height(20.dp))
         }
         item {
-            Text(songDetail, fontSize = 16.sp, color = Color.Black)
+            Text(songType, fontSize = 16.sp, color = Color.Black)
         }
         item {
             Spacer(modifier = Modifier.height(20.dp))
@@ -118,7 +132,7 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
         item {
             Row() {
                 AsyncImage(
-                    model = imageUrl,
+                    model = "imageUrl",
                     contentDescription = "Image Album",
                     modifier = Modifier
                         .height(50.dp)
@@ -210,11 +224,20 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
             Spacer(modifier = Modifier.padding(8.dp))
 
         }
-        item {
-            MusicListTile()
-            MusicListTile()
-            MusicListTile()
-            MusicListTile()
+        items(
+            items = musicList,
+            key = { it.id } ,
+        ) { song ->
+            Log.e("AShutoshhh", "SongListScreen: " + Gson().toJson(song) )
+            MusicListTile(
+                title = song.title,
+                subTitle = song.artist.orEmpty(),
+                onclick = {
+                    Log.e("Ashutoshh", "SongListScreen: " + song?.audioUrl )
+                     onsongClick(song.id)
+
+                }
+            )
         }
 
     }
@@ -224,5 +247,9 @@ fun SongListScreen(imageUrl: String, songDetail: String) {
 @Preview
 @Composable
 fun PreviewSongListScreen() {
-    SongListScreen("Ashutosh", "Melody Songs")
+    SongListScreen(onBackArrowClick = {
+
+    }, songType = "" , onsongClick = {
+
+    })
 }

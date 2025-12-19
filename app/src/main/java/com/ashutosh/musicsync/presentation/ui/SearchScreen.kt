@@ -13,6 +13,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import com.ashutosh.musicsync.domain.model.Song
+import com.ashutosh.musicsync.presentation.commonui.AppNavItem
 import com.ashutosh.musicsync.presentation.components.*
 import com.ashutosh.musicsync.presentation.viewmodel.SearchViewModel
 
@@ -52,7 +53,9 @@ fun SearchScreen(
 
         // 🔹 Header
         item {
-            CustomHeader(headerType = HeaderType.Search("Search"))
+            CustomHeader(headerType = HeaderType.Search("Search"), onarrowClick = {
+
+            })
             Spacer(Modifier.height(12.dp))
         }
 
@@ -92,17 +95,17 @@ fun SearchScreen(
         }
 
 
-        // 🔹 Tags row (LazyRow is OK inside LazyColumn)
         item {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(musicStyle) { tag ->
-                    MediumSongTile(artistName = tag)
+                    MediumSongTile( artistName = tag , onclick = {
+
+                    })
                 }
             }
             Spacer(Modifier.height(20.dp))
         }
 
-        // 🔹 Browse All (STATIC grid, not scrollable)
         item {
             Text(
                 text = "Browse All",
@@ -133,7 +136,9 @@ fun TopCategoryGrid(items: List<String>) {
                 rowItems.forEach { item ->
                     CustomSongBar(
                         songText = item,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        onclick = {
+                        }
                     )
                 }
 
@@ -159,7 +164,10 @@ fun BrowseAllStaticGrid(items: List<String>) {
                 rowItems.forEach { item ->
                     CustomSongBar(
                         songText = item,
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f),
+                        onclick = {
+
+                        }
                     )
                 }
 

@@ -8,5 +8,6 @@ data class Song(
     val album: String?,
     val artist: String?,
     val audioUrl: String?,
-    val language: String?
+    val language: String?,
+    val pids : String?
 )

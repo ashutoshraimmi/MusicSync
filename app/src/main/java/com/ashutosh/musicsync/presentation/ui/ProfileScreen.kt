@@ -49,7 +49,9 @@ fun ProfileScreen() {
         contentPadding = PaddingValues(4.dp),
     ) {
         item {
-            CustomHeader(headerType = HeaderType.Profile("Your Library"))
+            CustomHeader(headerType = HeaderType.Profile("Your Library"), onarrowClick = {
+
+            })
         }
         item {
             LazyRow() {

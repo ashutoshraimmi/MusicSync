@@ -1,5 +1,6 @@
 package com.ashutosh.musicsync.presentation.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,39 +23,39 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
 @Composable
-fun MusicListTile() {
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .height(64.dp),
-        contentAlignment = Alignment.Center
+fun MusicListTile(
+    title: String,
+    subTitle: String,
+    onclick : () -> Unit
+
+) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(64.dp)
+            .padding(horizontal = 8.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier
-                .height(52.dp)
-                .fillMaxWidth()
-                .padding(8.dp, 8.dp),
-            Arrangement.Center
 
-
-        ) {
-            Column(modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(0.9f)) {
-                Text("Heading", fontSize = 20.sp)
-                Text("SubHeading", fontSize = 12.sp)
+        Column(
+            modifier = Modifier.weight(1f).clickable{
+                onclick()
             }
-            Icon(
-                imageVector = Icons.Default.MoreVert,
-                contentDescription = "More Options",
-            )
-
-
+        ) {
+            Text(title, fontSize = 16.sp)
+            Text(subTitle, fontSize = 12.sp)
         }
+
+        Icon(
+            imageVector = Icons.Default.MoreVert,
+            contentDescription = "More Options"
+        )
     }
 }
+
 
 @Preview
 @Composable
 fun previewMusicListTile() {
-    MusicListTile()
+    MusicListTile(title = "Song Name", subTitle = "Artist Name", onclick = {})
 }

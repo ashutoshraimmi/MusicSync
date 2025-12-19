@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.room.Room
 import com.ashutosh.musicsync.data.local.AppDatabase
 import com.ashutosh.musicsync.data.remote.ApiService
+import com.ashutosh.musicsync.data.repository.GetSongDetailRepositoryImpl
+import com.ashutosh.musicsync.domain.repository.GetSongDetailRepository
 import com.ashutosh.musicsync.domain.repository.SearchRepository
 import com.example.saavn.data.repository.SearchRepositoryImpl
 import dagger.Binds
@@ -22,6 +24,13 @@ abstract class RepositoryModule {
     @Binds
     abstract fun bindSearchRepository(impl: SearchRepositoryImpl): SearchRepository
 }
+@Module
+@InstallIn(SingletonComponent::class)
+abstract class GetSongDetialRepositoryModule {
+    @Binds
+    abstract fun bindgetSongDetailRepostiory(impl: GetSongDetailRepositoryImpl): GetSongDetailRepository
+}
+
 
 @Module
 @InstallIn(SingletonComponent::class)

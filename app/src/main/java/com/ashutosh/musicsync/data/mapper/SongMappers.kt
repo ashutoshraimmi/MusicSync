@@ -13,7 +13,10 @@ fun SongItemDto.toDomain(): Song = Song(
     album = album,
     artist = more_info?.primary_artists ?: more_info?.singers ?: "",
     audioUrl = more_info?.vlink ?: url, // prefer vlink then url
-    language = more_info?.language
+    language = more_info?.language ,
+    pids = pids?.song_pids ?:""
+
+
 )
 
 fun SongsDto.toDomain(): List<Song> = data.map { it.toDomain() }

@@ -1,5 +1,6 @@
 package com.ashutosh.musicsync.presentation.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -26,6 +27,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.ashutosh.musicsync.presentation.commonui.AppNavItem
 import com.ashutosh.musicsync.presentation.components.CustomHeader
 import com.ashutosh.musicsync.presentation.components.CustomSongBar
 import com.ashutosh.musicsync.presentation.components.CustomTextView
@@ -35,7 +38,7 @@ import com.ashutosh.musicsync.presentation.components.OnSpotSong
 import com.ashutosh.musicsync.presentation.components.SmallSongTile
 
 @Composable
-fun HomeScreen() {
+fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
 
     val gridItems = listOf(
         "Old is Gold",
@@ -78,7 +81,10 @@ fun HomeScreen() {
 
         item {
             CustomHeader(
-                headerType = HeaderType.Home
+                headerType = HeaderType.Home,
+                onarrowClick = {
+
+                }
             )
         }
 
@@ -93,7 +99,7 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 items(gridItems) {
-                    CustomSongBar(songText = it)
+                    CustomSongBar(songText = it , onclick = { onclickCustombar(it) })
                 }
             }
         }
@@ -120,7 +126,7 @@ fun HomeScreen() {
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 items(artistName ){name ->
-                    MediumSongTile(artistName = name)
+                    MediumSongTile(artistName = name ,onclick = { onclickCustombar(name) })
                 }
 
             }
@@ -132,7 +138,9 @@ fun HomeScreen() {
         }
 
         item {
-            LazyRow(modifier = Modifier.height(150.dp).fillMaxWidth(),
+            LazyRow(modifier = Modifier
+                .height(150.dp)
+                .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 items(recentSong){songs ->
                     SmallSongTile(songs, "www.google.com")

@@ -7,5 +7,6 @@ data class SearchListDto(
     val playlists: PlaylistsDto? = null ,
     val shows: ShowsDto? = null ,
     val songs: SongsDto,
-    val topquery: TopQueryDto? = null
+    val topquery: TopQueryDto? = null,
+    val pids : AlbumMoreInfoDto? = null
 )

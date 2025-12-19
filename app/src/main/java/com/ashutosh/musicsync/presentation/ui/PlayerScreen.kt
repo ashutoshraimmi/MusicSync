@@ -22,6 +22,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -30,27 +32,32 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
+import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
 
 @Composable
 fun PlayerScreen(
-    imageUrl: String,
-    songTitle: String,
-    artistName: String,
-    isPlaying: Boolean,
-    onBack: () -> Unit,
-    onPlayPause: () -> Unit,
-    onNext: () -> Unit,
-    onPrevious: () -> Unit
+    onBackPress : () -> Unit ,
+    pids : String,
+    viewModel: PlayerViewModel = hiltViewModel()
+
 ) {
+    val songState = viewModel.currentSong.collectAsState().value
+
+    LaunchedEffect(pids) {
+        viewModel.getDetails(pids)
+    }
     Box(
         modifier = Modifier
-            .fillMaxSize()
+            .fillMaxHeight()
+            .fillMaxWidth()
     ) {
 
         // 🔹 Background Image
         AsyncImage(
-            model = imageUrl,
+            model = songState?.image,
             contentDescription = null,
             modifier = Modifier.fillMaxSize(),
             contentScale = ContentScale.Crop
@@ -74,7 +81,9 @@ fun PlayerScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.Start
             ) {
-                IconButton(onClick = onBack) {
+                IconButton(onClick = {
+                    onBackPress()
+                }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowDown,
                         contentDescription = "Close Player",
@@ -92,7 +101,7 @@ fun PlayerScreen(
                 modifier = Modifier.padding(bottom = 24.dp)
             ) {
                 Text(
-                    text = songTitle,
+                    text = songState?.song.orEmpty(),
                     color = Color.White,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold,
@@ -102,10 +111,13 @@ fun PlayerScreen(
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
-                    text = artistName,
-                    color = Color.White.copy(alpha = 0.7f),
-                    fontSize = 14.sp
+                    text = songState?.primary_artists.orEmpty(),
+                    color = Color.White,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    maxLines = 1
                 )
+
             }
 
             // 🔹 Player Controls
@@ -117,7 +129,9 @@ fun PlayerScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
 
-                IconButton(onClick = onPrevious) {
+                IconButton(onClick = {
+
+                }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowLeft,
                         contentDescription = "Previous",
@@ -126,9 +140,11 @@ fun PlayerScreen(
                     )
                 }
 
-                IconButton(onClick = onPlayPause) {
+                IconButton(onClick = {
+
+                }) {
                     Icon(
-                        imageVector = if (isPlaying)
+                        imageVector = if (true)
                             Icons.Default.PlayArrow
                         else
                             Icons.Default.PlayArrow,
@@ -138,7 +154,9 @@ fun PlayerScreen(
                     )
                 }
 
-                IconButton(onClick = onNext) {
+                IconButton(onClick = {
+
+                }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,
                         contentDescription = "Next",
@@ -155,13 +173,9 @@ fun PlayerScreen(
 @Composable
 fun PlayerScreenDarkLightPreview() {
     PlayerScreen(
-        imageUrl = "https://picsum.photos/800/1200",
-        songTitle = "Night Changes",
-        artistName = "One Direction",
-        isPlaying = false,
-        onBack = {},
-        onPlayPause = {},
-        onNext = {},
-        onPrevious = {}
+        onBackPress = {
+
+        },
+        pids = ""
     )
 }

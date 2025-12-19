@@ -10,5 +10,6 @@ data class SongItemDto(
     val description: String,
     val ctr: Int,
     val position: Int,
-    val more_info: SongMoreInfoDto
+    val more_info: SongMoreInfoDto,
+    val pids : AlbumMoreInfoDto
 )

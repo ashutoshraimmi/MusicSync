@@ -22,7 +22,7 @@ fun BottomBar(navController: NavHostController){
         BottomNavItem.Search,
         BottomNavItem.Profile
     )
-    NavigationBar(modifier = Modifier.fillMaxHeight(0.08f).padding(0.dp, 0.dp).background(color = Color.Gray)) {
+    NavigationBar(modifier = Modifier.height(72.dp).padding(0.dp, 0.dp).background(color = Color.Gray)) {
         val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
 
         item.forEach { item ->
