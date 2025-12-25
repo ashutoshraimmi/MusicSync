@@ -28,12 +28,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.ashutosh.musicsync.R
 import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
 import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
 
@@ -45,7 +47,9 @@ fun PlayerScreen(
 
 ) {
     val songState = viewModel.currentSong.collectAsState().value
-
+    val isPlaying = viewModel.isPlaying.collectAsState().value
+    val isShuffleOn = viewModel.isShuffleOn.collectAsState().value
+    val isrepeatOn = viewModel.isRepeatMode.collectAsState().value
     LaunchedEffect(pids) {
         viewModel.getDetails(pids)
     }
@@ -100,14 +104,32 @@ fun PlayerScreen(
             Column(
                 modifier = Modifier.padding(bottom = 24.dp)
             ) {
-                Text(
-                    text = songState?.song.orEmpty(),
-                    color = Color.White,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold,
-                    maxLines = 1
-                )
+                Row() {
+                    Text(
+                        text = songState?.song.orEmpty(),
+                        color = Color.White,
+                        fontSize = 22.sp,
+                        fontWeight = FontWeight.Bold,
+                        maxLines = 1
+                    )
+                    IconButton(onClick = {
+                        viewModel.toggleRepeatMode()
+                    }) {
+                        if(!isrepeatOn){
+                            Icon(
+                                painterResource(R.drawable.outline_repeat_one_24),
+                                contentDescription = "Repeat one "
+                            )
+                        }
+                        else{
+                            Icon(
+                                painterResource(R.drawable.outline_repeat_on_24),
+                                contentDescription = "Repeat one "
+                            )
 
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(4.dp))
 
                 Text(
@@ -130,6 +152,22 @@ fun PlayerScreen(
             ) {
 
                 IconButton(onClick = {
+                    viewModel.toggleShuffle()
+                }) {
+                    if(!isShuffleOn){
+                        Icon(
+                            painterResource(R.drawable.outline_shuffle_24),
+                            contentDescription = "Shuffle"
+                        )
+
+                    }else{
+                        Icon(
+                            painterResource(R.drawable.outline_shuffle_on_24),
+                            contentDescription = "Shuffle on"
+                        )
+                    }
+                }
+                IconButton(onClick = {
 
                 }) {
                     Icon(
@@ -140,19 +178,33 @@ fun PlayerScreen(
                     )
                 }
 
-                IconButton(onClick = {
 
-                }) {
-                    Icon(
-                        imageVector = if (true)
-                            Icons.Default.PlayArrow
-                        else
-                            Icons.Default.PlayArrow,
-                        contentDescription = "Play Pause",
-                        tint = Color.White,
-                        modifier = Modifier.size(72.dp)
-                    )
-                }
+
+                    IconButton(
+                        onClick = {
+                            songState?.vlink?.let { url ->
+                                viewModel.togglePlayPause(url)
+                            }
+                        }
+                    ) {
+                        if (isPlaying) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.ic_pause),
+                                contentDescription = "Pause",
+                                tint = Color.White,
+                                modifier = Modifier.size(72.dp)
+                            )
+                        } else {
+                            Icon(
+                                imageVector = Icons.Default.PlayArrow,
+                                contentDescription = "Play",
+                                tint = Color.White,
+                                modifier = Modifier.size(72.dp)
+                            )
+                        }
+                    }
+
+
 
                 IconButton(onClick = {
 
@@ -162,6 +214,15 @@ fun PlayerScreen(
                         contentDescription = "Next",
                         tint = Color.White,
                         modifier = Modifier.size(36.dp)
+                    )
+                }
+
+                IconButton(onClick = {
+                    viewModel.playbackSpeed()
+                }) {
+                    Icon(
+                        painterResource(R.drawable.outline_timer_24),
+                        contentDescription = "Timer"
                     )
                 }
             }

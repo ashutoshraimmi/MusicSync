@@ -3,6 +3,7 @@ package com.ashutosh.musicsync.presentation.ui
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -20,8 +21,11 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.FavoriteBorder
 import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -44,11 +48,12 @@ import com.ashutosh.musicsync.presentation.components.MusicListTile
 import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
 import com.google.gson.Gson
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SongListScreen(
     onBackArrowClick: () -> Unit,
     songType: String,
-    onsongClick : (pids : String) -> Unit,
+    onsongClick: (pids: String) -> Unit,
     viewModel: SongListViewModel = hiltViewModel()
 ) {
     var query by remember { mutableStateOf(songType) }
@@ -76,7 +81,7 @@ fun SongListScreen(
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(16.dp, 4.dp),
+            .padding(16.dp, 0.dp),
     ) {
         item {
             CustomHeader(HeaderType.SongList, onarrowClick = {
@@ -129,127 +134,126 @@ fun SongListScreen(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        item {
-            Row() {
-                AsyncImage(
-                    model = "imageUrl",
-                    contentDescription = "Image Album",
-                    modifier = Modifier
-                        .height(50.dp)
-                        .width(40.dp)
-                        .background(color = Color.Gray, shape = smallroundedShape),
-
-                    )
-                Spacer(modifier = Modifier.padding(4.dp))
-                Box(
-                    modifier = Modifier
-                        .width(45.dp)
-                        .height(45.dp)
-                        .padding()
-                        .background(color = Color.Gray, shape = CircleShape),
-                    contentAlignment = Alignment.Center,
-
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.Add,
+            item {
+                Row() {
+                    AsyncImage(
+                        model = "imageUrl",
+                        contentDescription = "Image Album",
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(2.dp),
-                        contentDescription = "Add Icon"
-                    )
-                }
-                Spacer(modifier = Modifier.padding(4.dp))
-                Box(
-                    modifier = Modifier
-                        .width(45.dp)
-                        .height(45.dp)
-                        .padding()
-                        .background(color = Color.Gray, shape = CircleShape),
-                    contentAlignment = Alignment.Center,
+                            .height(50.dp)
+                            .width(40.dp)
+                            .background(color = Color.Gray, shape = smallroundedShape),
 
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.FavoriteBorder,
+                        )
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Box(
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(2.dp),
-                        contentDescription = "Add Icon"
-                    )
-                }
-                Spacer(modifier = Modifier.padding(4.dp))
-                Box(
-                    modifier = Modifier
-                        .width(45.dp)
-                        .height(45.dp)
-                        .padding()
-                        .background(color = Color.Gray, shape = CircleShape),
-                    contentAlignment = Alignment.Center,
+                            .width(45.dp)
+                            .height(45.dp)
+                            .padding()
+                            .background(color = Color.Gray, shape = CircleShape),
+                        contentAlignment = Alignment.Center,
 
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.Menu,
+                        ) {
+                        Icon(
+                            imageVector = Icons.Default.Add,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(2.dp),
+                            contentDescription = "Add Icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Box(
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(2.dp),
-                        contentDescription = "Add Icon"
-                    )
-                }
-                Spacer(modifier = Modifier.padding(4.dp))
-                Box(
-                    modifier = Modifier
-                        .width(45.dp)
-                        .height(45.dp)
-                        .padding()
-                        .background(color = Color.Gray, shape = CircleShape),
-                    contentAlignment = Alignment.Center,
+                            .width(45.dp)
+                            .height(45.dp)
+                            .padding()
+                            .background(color = Color.Gray, shape = CircleShape),
+                        contentAlignment = Alignment.Center,
 
-                    ) {
-                    Icon(
-                        imageVector = Icons.Default.PlayArrow,
+                        ) {
+                        Icon(
+                            imageVector = Icons.Default.FavoriteBorder,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(2.dp),
+                            contentDescription = "Add Icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Box(
                         modifier = Modifier
-                            .size(32.dp)
-                            .background(Color.White, CircleShape)
-                            .padding(2.dp),
-                        contentDescription = "Add Icon"
-                    )
+                            .width(45.dp)
+                            .height(45.dp)
+                            .padding()
+                            .background(color = Color.Gray, shape = CircleShape),
+                        contentAlignment = Alignment.Center,
+
+                        ) {
+                        Icon(
+                            imageVector = Icons.Default.Menu,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(2.dp),
+                            contentDescription = "Add Icon"
+                        )
+                    }
+                    Spacer(modifier = Modifier.padding(4.dp))
+                    Box(
+                        modifier = Modifier
+                            .width(45.dp)
+                            .height(45.dp)
+                            .padding()
+                            .background(color = Color.Gray, shape = CircleShape),
+                        contentAlignment = Alignment.Center,
+
+                        ) {
+                        Icon(
+                            imageVector = Icons.Default.PlayArrow,
+                            modifier = Modifier
+                                .size(32.dp)
+                                .background(Color.White, CircleShape)
+                                .padding(2.dp),
+                            contentDescription = "Add Icon"
+                        )
+                    }
+
                 }
 
             }
+            item {
+                Spacer(modifier = Modifier.padding(8.dp))
+
+            }
+            items(
+                items = musicList,
+                key = { it.id },
+            ) { song ->
+                Log.e("AShutoshhh", "SongListScreen: " + Gson().toJson(song))
+                MusicListTile(
+                    title = song.title,
+                    subTitle = song.artist.orEmpty(),
+                    onclick = {
+                        Log.e("Ashutoshh", "SongListScreen: " + song?.audioUrl)
+                        onsongClick(song.id)
+
+                    }
+                )
+            }
 
         }
-        item {
-            Spacer(modifier = Modifier.padding(8.dp))
-
-        }
-        items(
-            items = musicList,
-            key = { it.id } ,
-        ) { song ->
-            Log.e("AShutoshhh", "SongListScreen: " + Gson().toJson(song) )
-            MusicListTile(
-                title = song.title,
-                subTitle = song.artist.orEmpty(),
-                onclick = {
-                    Log.e("Ashutoshh", "SongListScreen: " + song?.audioUrl )
-                     onsongClick(song.id)
-
-                }
-            )
-        }
-
     }
-
-}
 
 @Preview
 @Composable
 fun PreviewSongListScreen() {
     SongListScreen(onBackArrowClick = {
 
-    }, songType = "" , onsongClick = {
+    }, songType = "", onsongClick = {
 
     })
 }
