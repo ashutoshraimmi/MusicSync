@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.Player
 import androidx.media3.ui.PlayerView
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.ashutosh.musicsync.navgraph.AppNavGraph
 import com.ashutosh.musicsync.presentation.commonui.BottomBar
@@ -49,12 +50,16 @@ fun MainScreen(
 
     val currentSong by playerViewModel.currentSong.collectAsState()
 
+    // 🔥 Observe navigation
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
+    // 🔥 True when PlayerScreen is open
+    val isPlayerScreen = currentRoute?.startsWith("song_detail") == true
     Scaffold(
         bottomBar = {
             Column {
-
-                // ✅ Mini Player (only when song exists)
-                if (currentSong != null) {
+                if (currentSong != null && !isPlayerScreen) {
                     MiniPlayerComponent(viewModel = playerViewModel)
                 }
 
