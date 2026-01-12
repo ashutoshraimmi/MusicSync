@@ -15,12 +15,15 @@ import com.ashutosh.musicsync.presentation.ui.HomeScreen
 import com.ashutosh.musicsync.presentation.ui.PlayerScreen
 import com.ashutosh.musicsync.presentation.ui.ProfileScreen
 import com.ashutosh.musicsync.presentation.ui.SongListScreen
+import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
 import com.example.saavn.presentation.ui.SearchScreen
 
 @Composable
 fun AppNavGraph(
     navController: NavHostController,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    playerViewModel: PlayerViewModel
+
 ) {
     NavHost(
         navController = navController,
@@ -74,8 +77,11 @@ fun AppNavGraph(
             PlayerScreen(onBackPress = {
                 navController.popBackStack()
             },
-                pids = pids
-                )
+                pids = pids,
+                viewModel = playerViewModel   // 🔥 SAME VIEWMODEL
+
+            )
+
 
         }
 

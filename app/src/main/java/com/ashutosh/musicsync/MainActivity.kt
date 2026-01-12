@@ -11,6 +11,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.media3.common.Player
@@ -29,7 +30,6 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             MusicSyncTheme {
-                // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
@@ -47,28 +47,27 @@ fun MainScreen(
 ) {
     val navController = rememberNavController()
 
-    var isPlaying  = playerViewModel.isPlaying.collectAsState().value
+    val currentSong by playerViewModel.currentSong.collectAsState()
 
     Scaffold(
         bottomBar = {
             Column {
-                // ✅ Show Mini Player only when music is playing
-                if (isPlaying) {
-                    MiniPlayerComponent(
-                        isPlaying = isPlaying,
-                        onPlayPauseClick = {
-                            playerViewModel.togglePlayPause()
-                        }
-                    )
+
+                // ✅ Mini Player (only when song exists)
+                if (currentSong != null) {
+                    MiniPlayerComponent(viewModel = playerViewModel)
                 }
 
+                // ✅ Bottom Navigation Bar
                 BottomBar(navController = navController)
             }
         }
     ) { paddingValues ->
+
         AppNavGraph(
             navController = navController,
-            modifier = Modifier.padding(paddingValues)
+            modifier = Modifier.padding(paddingValues),
+            playerViewModel = playerViewModel   // 🔥 SAME INSTANCE
         )
     }
 }

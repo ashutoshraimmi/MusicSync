@@ -14,55 +14,77 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.ashutosh.musicsync.R
-
+import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
 @Composable
 fun MiniPlayerComponent(
-    isPlaying: Boolean,
-    onPlayPauseClick: () -> Unit
+    viewModel: PlayerViewModel
 ) {
+    val songState by viewModel.currentSong.collectAsState()
+    val isPlaying by viewModel.isPlaying.collectAsState()
+
+    if (songState == null) return
+
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(64.dp)
-            .background(Color.Gray)
+            .wrapContentHeight()
+            .background(Color.Black.copy(alpha = 0.85f))
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
         Row(
-            modifier = Modifier
-                .fillMaxSize(),
             verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier.fillMaxWidth()
         ) {
 
             AsyncImage(
-                model = "ajsdhak",
+                model = songState?.image,
                 contentDescription = null,
                 modifier = Modifier.size(40.dp)
             )
 
             Column(
-                modifier = Modifier.weight(1f).padding(start = 8.dp)
+                modifier = Modifier
+                    .weight(1f)
+                    .padding(start = 8.dp)
             ) {
-                Text("Music Name", fontSize = 14.sp)
-                Text("Artist Name", fontSize = 10.sp)
+                Text(
+                    text = songState?.song.orEmpty(),
+                    color = Color.White,
+                    fontSize = 14.sp,
+                    maxLines = 1
+                )
+                Text(
+                    text = songState?.primary_artists.orEmpty(),
+                    color = Color.Gray,
+                    fontSize = 10.sp,
+                    maxLines = 1
+                )
             }
 
-            IconButton(onClick = onPlayPauseClick) {
-                if (isPlaying) {
+            IconButton(onClick = {
+                songState?.vlink?.let { viewModel.togglePlayPause(it) }
+            }) {
+                if(isPlaying){
                     Icon(
                         painter = painterResource(id = R.drawable.ic_pause),
                         contentDescription = "Pause",
@@ -85,8 +107,6 @@ fun MiniPlayerComponent(
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_MASK)
 @Composable
 fun previewMiniPlayer(){
-    MiniPlayerComponent(true ,{
-
-    })
+    MiniPlayerComponent(viewModel())
 
 }
