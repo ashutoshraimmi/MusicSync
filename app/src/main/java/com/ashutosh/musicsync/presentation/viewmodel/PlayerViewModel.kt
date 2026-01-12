@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
+import androidx.media3.common.Player
 import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.ExoPlayer
 import com.ashutosh.musicsync.domain.model.currentSong.CurrentSong
@@ -31,7 +32,17 @@ class PlayerViewModel @Inject constructor(
     val currentSong: StateFlow<CurrentSong?> = _currentSong
 
     private var job: Job? = null
+    private var exoPlayer: ExoPlayer? = null
 
+    init {
+        exoPlayer = ExoPlayer.Builder(context).build()
+
+        exoPlayer?.addListener(object : Player.Listener {
+            override fun onIsPlayingChanged(isPlaying: Boolean) {
+                _isPlaying.value = isPlaying
+            }
+        })
+    }
     fun getDetails(pid: String) {
         job?.cancel()
         job = viewModelScope.launch {
@@ -55,51 +66,70 @@ class PlayerViewModel @Inject constructor(
 
 
 
-    private var exoPlayer: ExoPlayer? = null
 
     fun play(url: String) {
-        if (exoPlayer == null) {
-            exoPlayer = ExoPlayer.Builder(context).setLivePlaybackSpeedControl(
-                DefaultLivePlaybackSpeedControl.Builder().setFallbackMaxPlaybackSpeed(1.5f).build()
-            ).build()
-        }
-
         val mediaItem = MediaItem.fromUri(url)
-        exoPlayer?.apply {
-            setMediaItem(mediaItem)
-            prepare()
-            play()
+
+        // Avoid resetting if same song is already loaded
+        if (exoPlayer?.currentMediaItem?.localConfiguration?.uri.toString() != url) {
+            exoPlayer?.setMediaItem(mediaItem)
+            exoPlayer?.prepare()
         }
 
-        _isPlaying.value = true
+        exoPlayer?.play()
     }
+
 
     fun pause() {
         exoPlayer?.pause()
         _isPlaying.value = false
     }
 
-    fun toggleShuffle(){
-        exoPlayer?.shuffleModeEnabled = _isShuffleOn.value
-        _isShuffleOn.value = !_isShuffleOn.value
+    fun toggleShuffle() {
+        val newValue = !_isShuffleOn.value
+        _isShuffleOn.value = newValue
+        exoPlayer?.shuffleModeEnabled = newValue
+    }
 
+    fun togglePlayPause() {
+        if (_isPlaying.value) {
+            pause()
+        } else {
+            exoPlayer?.play()
+            _isPlaying.value = true
+        }
     }
     fun togglePlayPause(url: String) {
         if (_isPlaying.value) {
             pause()
         } else {
-            play(url)
+            if (exoPlayer == null || exoPlayer?.currentMediaItem == null) {
+                play(url)
+            } else {
+                exoPlayer?.play()
+                _isPlaying.value = true
+            }
         }
     }
-    fun playbackSpeed(){
-        exoPlayer?.setPlaybackSpeed(1.25f)
-        _timer.value = !_timer.value
 
+
+    private val _isSpeedUp = MutableStateFlow(false)
+    val isSpeedUp = _isSpeedUp.asStateFlow()
+
+    fun togglePlaybackSpeed() {
+        val speedUp = !_isSpeedUp.value
+        _isSpeedUp.value = speedUp
+        exoPlayer?.setPlaybackSpeed(if (speedUp) 1.25f else 1.0f)
     }
-    fun toggleRepeatMode(){
-        exoPlayer?.repeatMode
-        _isRepeatMode.value = !_isRepeatMode.value
+    fun toggleRepeatMode() {
+        val newValue = !_isRepeatMode.value
+        _isRepeatMode.value = newValue
+
+        exoPlayer?.repeatMode =
+            if (newValue) ExoPlayer.REPEAT_MODE_ONE
+            else ExoPlayer.REPEAT_MODE_OFF
     }
+
     override fun onCleared() {
         exoPlayer?.release()
         exoPlayer = null

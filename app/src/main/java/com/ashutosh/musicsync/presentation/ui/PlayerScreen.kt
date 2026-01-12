@@ -34,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.media3.exoplayer.ExoPlayer
 import coil.compose.AsyncImage
 import com.ashutosh.musicsync.R
 import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
@@ -46,6 +47,7 @@ fun PlayerScreen(
     viewModel: PlayerViewModel = hiltViewModel()
 
 ) {
+
     val songState = viewModel.currentSong.collectAsState().value
     val isPlaying = viewModel.isPlaying.collectAsState().value
     val isShuffleOn = viewModel.isShuffleOn.collectAsState().value
@@ -53,13 +55,13 @@ fun PlayerScreen(
     LaunchedEffect(pids) {
         viewModel.getDetails(pids)
     }
+
     Box(
         modifier = Modifier
             .fillMaxHeight()
             .fillMaxWidth()
     ) {
 
-        // 🔹 Background Image
         AsyncImage(
             model = songState?.image,
             contentDescription = null,
@@ -218,7 +220,7 @@ fun PlayerScreen(
                 }
 
                 IconButton(onClick = {
-                    viewModel.playbackSpeed()
+                    viewModel.togglePlaybackSpeed()
                 }) {
                     Icon(
                         painterResource(R.drawable.outline_timer_24),
@@ -228,6 +230,7 @@ fun PlayerScreen(
             }
         }
     }
+
 }
 
 @Preview(name = "Dark Mode", uiMode = Configuration.UI_MODE_NIGHT_MASK)
@@ -240,3 +243,4 @@ fun PlayerScreenDarkLightPreview() {
         pids = ""
     )
 }
+
