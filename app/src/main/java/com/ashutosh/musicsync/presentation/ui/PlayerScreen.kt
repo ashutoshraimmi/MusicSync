@@ -170,7 +170,7 @@ fun PlayerScreen(
                     }
                 }
                 IconButton(onClick = {
-
+                    viewModel.playPrevious()
                 }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowLeft,
@@ -209,7 +209,7 @@ fun PlayerScreen(
 
 
                 IconButton(onClick = {
-
+                    viewModel.playNext()
                 }) {
                     Icon(
                         imageVector = Icons.Default.KeyboardArrowRight,

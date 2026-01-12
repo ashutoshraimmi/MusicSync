@@ -24,5 +24,5 @@ interface ApiService {
         @Query("_marker") marker: String = "0?_marker=0",
         @Query("_format") format: String = "json",
         @Query("pids") pids: String
-    ): Map<String, CurrentSong>
+    ): retrofit2.Response<String>
 }

@@ -76,7 +76,7 @@ fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp, vertical = 4.dp)
+            .padding(horizontal = 12.dp, vertical = 8.dp)
     ) {
 
         item {
@@ -93,10 +93,10 @@ fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(220.dp), // ✅ MUST give height
-                contentPadding = PaddingValues(2.dp),
-                verticalArrangement = Arrangement.spacedBy(2.dp),
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
+                    .height(240.dp),
+                contentPadding = PaddingValues(4.dp),
+                verticalArrangement = Arrangement.spacedBy(8.dp),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(gridItems) {
                     CustomSongBar(songText = it , onclick = { onclickCustombar(it) })
@@ -122,13 +122,14 @@ fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
         }
 
         item {
-            LazyRow(modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
             ) {
                 items(artistName ){name ->
                     MediumSongTile(artistName = name ,onclick = { onclickCustombar(name) })
                 }
-
             }
         }
         item {
@@ -138,16 +139,17 @@ fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
         }
 
         item {
-            LazyRow(modifier = Modifier
-                .height(150.dp)
-                .fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            LazyRow(
+                modifier = Modifier
+                    .height(160.dp)
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
                 items(recentSong){songs ->
                     SmallSongTile(songs, "www.google.com")
-                    
                 }
             }
-
         }
     }
 }
