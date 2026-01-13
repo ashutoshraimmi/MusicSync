@@ -8,15 +8,19 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
+import androidx.compose.material3.NavigationBarItemDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+
 @Composable
 fun BottomBar(navController: NavHostController) {
 
@@ -32,8 +36,9 @@ fun BottomBar(navController: NavHostController) {
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .navigationBarsPadding(),   // ✅ VERY IMPORTANT (prevents cropping)
-        containerColor = Color.Black.copy(alpha = 0.85f) // ✅ Spotify-like opacity
+            .shadow(8.dp)
+            .navigationBarsPadding(),
+        containerColor = MaterialTheme.colorScheme.surface.copy(alpha = 0.95f)
     ) {
         items.forEach { item ->
             NavigationBarItem(
@@ -45,11 +50,34 @@ fun BottomBar(navController: NavHostController) {
                     }
                 },
                 icon = {
-                    Icon(item.icon, contentDescription = item.title)
+                    Icon(
+                        item.icon,
+                        contentDescription = item.title,
+                        tint = if (currentRoute == item.route) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
                 },
                 label = {
-                    Text(item.title, color = Color.White)
-                }
+                    Text(
+                        item.title,
+                        style = MaterialTheme.typography.labelSmall,
+                        color = if (currentRoute == item.route) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurfaceVariant
+                        }
+                    )
+                },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = MaterialTheme.colorScheme.primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
+                    indicatorColor = MaterialTheme.colorScheme.primary.copy(alpha = 0.2f),
+                    unselectedIconColor = MaterialTheme.colorScheme.onSurfaceVariant,
+                    unselectedTextColor = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             )
         }
     }

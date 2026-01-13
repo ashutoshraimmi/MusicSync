@@ -14,8 +14,11 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -37,10 +40,16 @@ abstract class GetSongDetialRepositoryModule {
 object NetworkModule {
 
     @Provides @Singleton
-    fun provideRetrofit(): Retrofit =
+    fun provideGson(): Gson = GsonBuilder()
+        .setLenient()
+        .create()
+
+    @Provides @Singleton
+    fun provideRetrofit(gson: Gson): Retrofit =
         Retrofit.Builder()
             .baseUrl("https://www.jiosaavn.com/")
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create()) // For String responses
+            .addConverterFactory(GsonConverterFactory.create(gson)) // For JSON object responses
             .build()
 
     @Provides @Singleton

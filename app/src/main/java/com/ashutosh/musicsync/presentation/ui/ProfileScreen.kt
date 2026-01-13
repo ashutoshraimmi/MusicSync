@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,8 +46,8 @@ fun ProfileScreen() {
         modifier = Modifier
             .fillMaxWidth()
             .fillMaxHeight()
-            .padding(8.dp, 16.dp),
-        contentPadding = PaddingValues(4.dp),
+            .padding(horizontal = 12.dp, vertical = 8.dp),
+        contentPadding = PaddingValues(vertical = 4.dp),
     ) {
         item {
             CustomHeader(headerType = HeaderType.Profile("Your Library"), onarrowClick = {
@@ -54,15 +55,19 @@ fun ProfileScreen() {
             })
         }
         item {
-            LazyRow() {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
                 items(filterType) { filter ->
                     HeaderButton(
-                        buttonText = filter, onClick = {
+                        buttonText = filter,
+                        onClick = {
                             // handle click //
-                        }, true, modifier = Modifier, backgroundColor = Color.Gray
-
+                        },
+                        enabled = true,
+                        modifier = Modifier,
+                        backgroundColor = MaterialTheme.colorScheme.surfaceVariant
                     )
-
                 }
             }
         }
@@ -70,10 +75,25 @@ fun ProfileScreen() {
             Spacer(modifier = Modifier.height(12.dp))
         }
         item {
-            Box(modifier = Modifier.fillMaxWidth()) {
-                Row() {
-                    Icon(Icons.Default.KeyboardArrowDown, contentDescription = "Arrow Down")
-                    Text("Recents", fontSize = 12.sp)
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 8.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.KeyboardArrowDown,
+                        contentDescription = "Arrow Down",
+                        tint = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    Text(
+                        "Recents",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.padding(start = 4.dp)
+                    )
                 }
             }
         }

@@ -2,6 +2,7 @@ package com.ashutosh.musicsync.presentation.ui
 
 import android.util.Log
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -45,6 +46,7 @@ import com.ashutosh.musicsync.presentation.components.CustomHeader
 import com.ashutosh.musicsync.presentation.components.CustomSearchBar
 import com.ashutosh.musicsync.presentation.components.HeaderType
 import com.ashutosh.musicsync.presentation.components.MusicListTile
+import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
 import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
 import com.google.gson.Gson
 
@@ -54,7 +56,8 @@ fun SongListScreen(
     onBackArrowClick: () -> Unit,
     songType: String,
     onsongClick: (pids: String) -> Unit,
-    viewModel: SongListViewModel = hiltViewModel()
+    viewModel: SongListViewModel = hiltViewModel(),
+    playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
     var query by remember { mutableStateOf(songType) }
 
@@ -64,6 +67,13 @@ fun SongListScreen(
     // ✅ Trigger search only when query changes
     LaunchedEffect(query) {
         viewModel.onQueryChanged(query)
+    }
+    
+    // ✅ Set queue when songs are loaded
+    LaunchedEffect(musicList) {
+        if (musicList.isNotEmpty()) {
+            playerViewModel.setQueue(musicList)
+        }
     }
     val roundedShape = RoundedCornerShape(
         topStart = 16.dp,
@@ -208,7 +218,13 @@ fun SongListScreen(
                             .width(45.dp)
                             .height(45.dp)
                             .padding()
-                            .background(color = Color.Gray, shape = CircleShape),
+                            .background(color = Color.Gray, shape = CircleShape)
+                            .clickable {
+                                // Play first song in queue
+                                if (musicList.isNotEmpty()) {
+                                    playerViewModel.playFromQueue(0)
+                                }
+                            },
                         contentAlignment = Alignment.Center,
 
                         ) {
@@ -218,7 +234,7 @@ fun SongListScreen(
                                 .size(32.dp)
                                 .background(Color.White, CircleShape)
                                 .padding(2.dp),
-                            contentDescription = "Add Icon"
+                            contentDescription = "Play Icon"
                         )
                     }
 
@@ -239,8 +255,10 @@ fun SongListScreen(
                     subTitle = song.artist.orEmpty(),
                     onclick = {
                         Log.e("Ashutoshh", "SongListScreen: " + song?.audioUrl)
+                        // Play the song from queue by ID
+                        playerViewModel.playSongById(song.id)
+                        // Also navigate to player screen
                         onsongClick(song.id)
-
                     }
                 )
             }

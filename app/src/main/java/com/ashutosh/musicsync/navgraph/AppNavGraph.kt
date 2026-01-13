@@ -14,9 +14,9 @@ import com.ashutosh.musicsync.presentation.components.HeaderType
 import com.ashutosh.musicsync.presentation.ui.HomeScreen
 import com.ashutosh.musicsync.presentation.ui.PlayerScreen
 import com.ashutosh.musicsync.presentation.ui.ProfileScreen
+import com.ashutosh.musicsync.presentation.ui.SearchScreen
 import com.ashutosh.musicsync.presentation.ui.SongListScreen
 import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
-import com.example.saavn.presentation.ui.SearchScreen
 
 @Composable
 fun AppNavGraph(
@@ -63,7 +63,8 @@ fun AppNavGraph(
                     navController.navigate(
                         AppNavItem.SongDetails.createRoute(pids)
                     )
-                }
+                },
+                playerViewModel = playerViewModel
             )
         }
         composable(

@@ -17,10 +17,12 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Face
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -44,29 +46,39 @@ fun CustomSongBar(
         modifier = modifier
             .padding(2.dp)
             .fillMaxWidth()
-            .height(48.dp)   // ✅ default height
-            .background(color = Color.Gray, shape = shape)
-            .border(1.dp, color = Color.Black, shape = shape)
+            .height(56.dp)
+            .shadow(2.dp, shape = shape)
+            .background(color = MaterialTheme.colorScheme.surfaceVariant, shape = shape)
             .clickable{onclick()},
         contentAlignment = Alignment.Center,
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(4.dp),
+                .padding(horizontal = 12.dp, vertical = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(
-                Icons.Default.Face,
-                contentDescription = "Card Image",
+            Box(
                 modifier = Modifier
-                    .size(32.dp)
-                    .background(Color.White, CircleShape)
-                    .padding(2.dp)
-            )
+                    .size(36.dp)
+                    .background(MaterialTheme.colorScheme.primary, CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    Icons.Default.Face,
+                    contentDescription = "Card Image",
+                    modifier = Modifier.size(20.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
 
-            Box(modifier = Modifier.padding(start = 8.dp)) {
-                Text(displayText, fontSize = 12.sp)
+            Box(modifier = Modifier.padding(start = 12.dp)) {
+                Text(
+                    displayText,
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    maxLines = 1
+                )
             }
         }
     }

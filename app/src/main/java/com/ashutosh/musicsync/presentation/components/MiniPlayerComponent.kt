@@ -19,12 +19,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.painterResource
@@ -48,8 +50,9 @@ fun MiniPlayerComponent(
         modifier = Modifier
             .fillMaxWidth()
             .wrapContentHeight()
-            .background(Color.Black.copy(alpha = 0.85f))
-            .padding(horizontal = 12.dp, vertical = 8.dp)
+            .shadow(4.dp)
+            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.95f))
+            .padding(horizontal = 16.dp, vertical = 10.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -59,24 +62,24 @@ fun MiniPlayerComponent(
             AsyncImage(
                 model = songState?.image,
                 contentDescription = null,
-                modifier = Modifier.size(40.dp)
+                modifier = Modifier.size(44.dp)
             )
 
             Column(
                 modifier = Modifier
                     .weight(1f)
-                    .padding(start = 8.dp)
+                    .padding(start = 12.dp)
             ) {
                 Text(
                     text = songState?.song.orEmpty(),
-                    color = Color.White,
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1
                 )
                 Text(
                     text = songState?.primary_artists.orEmpty(),
-                    color = Color.Gray,
-                    fontSize = 10.sp,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1
                 )
             }
@@ -88,13 +91,13 @@ fun MiniPlayerComponent(
                     Icon(
                         painter = painterResource(id = R.drawable.ic_pause),
                         contentDescription = "Pause",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 } else {
                     Icon(
                         imageVector = Icons.Default.PlayArrow,
                         contentDescription = "Play",
-                        tint = Color.White
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
             }

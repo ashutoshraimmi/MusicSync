@@ -14,9 +14,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -28,19 +31,40 @@ import coil.compose.ImagePainter
 
 @Composable
 fun OnSpotSong() {
-    Box(modifier = Modifier.fillMaxWidth(1.0f).height(132.dp).background(color = Color.Gray , shape = RoundedCornerShape(24.dp)).padding(8.dp, 4.dp)){
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(140.dp)
+            .shadow(4.dp, shape = RoundedCornerShape(20.dp))
+            .background(
+                color = MaterialTheme.colorScheme.surfaceVariant,
+                shape = RoundedCornerShape(20.dp)
+            )
+            .padding(12.dp)
+    ){
         Row(
             modifier = Modifier.fillMaxWidth(),
             verticalAlignment = Alignment.CenterVertically
-
         ) {
             Image(
                 painter = painterResource(R.drawable.star_off),
-                contentDescription = "This is song tile image",
-                modifier = Modifier.fillMaxHeight().fillMaxWidth(0.30f),
+                contentDescription = "Song tile image",
+                modifier = Modifier
+                    .fillMaxHeight()
+                    .fillMaxWidth(0.30f),
                 contentScale = ContentScale.Crop
             )
-            CustomTextView("Song Picked for You ")
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 16.dp)
+            ) {
+                Text(
+                    text = "Song Picked for You",
+                    style = MaterialTheme.typography.titleMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
         }
     }
 }

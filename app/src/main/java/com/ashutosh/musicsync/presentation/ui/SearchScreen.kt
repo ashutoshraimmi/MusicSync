@@ -1,5 +1,6 @@
-package com.example.saavn.presentation.ui
+package com.ashutosh.musicsync.presentation.ui
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -48,7 +49,7 @@ fun SearchScreen(
     LazyColumn(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
+            .padding(horizontal = 12.dp)
     ) {
 
         // 🔹 Header
@@ -96,14 +97,17 @@ fun SearchScreen(
 
 
         item {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp)
+            ) {
                 items(musicStyle) { tag ->
                     MediumSongTile( artistName = tag , onclick = {
 
                     })
                 }
             }
-            Spacer(Modifier.height(20.dp))
+            Spacer(Modifier.height(24.dp))
         }
 
         item {
@@ -184,20 +188,33 @@ fun SongRow(song: Song, onClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 8.dp),
+            .padding(vertical = 10.dp, horizontal = 4.dp)
+            .clickable { onClick() },
         verticalAlignment = Alignment.CenterVertically
     ) {
         AsyncImage(
             model = song.image,
             contentDescription = null,
-            modifier = Modifier.size(48.dp)
+            modifier = Modifier.size(56.dp)
         )
 
-        Spacer(Modifier.width(12.dp))
+        Spacer(Modifier.width(16.dp))
 
-        Column {
-            Text(song.title, maxLines = 1)
-            Text(song.artist ?: "", style = MaterialTheme.typography.bodySmall)
+        Column(
+            modifier = Modifier.weight(1f)
+        ) {
+            Text(
+                song.title,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onBackground,
+                maxLines = 1
+            )
+            Text(
+                song.artist ?: "",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                maxLines = 1
+            )
         }
     }
 }

@@ -15,10 +15,12 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -30,7 +32,7 @@ fun CustomHeader(headerType: HeaderType, onarrowClick : ()-> Unit) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(0.dp, 16.dp, 8.dp, 4.dp)
+            .padding(horizontal = 4.dp, vertical = 12.dp)
     ) {
         when (headerType) {
             is HeaderType.Home -> HomeTopBar()
@@ -55,77 +57,91 @@ fun CustomHeader(headerType: HeaderType, onarrowClick : ()-> Unit) {
 }
 @Composable
 fun HomeTopBar(){
-    LazyRow(modifier = Modifier.height(48.dp) , verticalAlignment = Alignment.CenterVertically) {
+    LazyRow(
+        modifier = Modifier.height(52.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         item{
-            Box(modifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = Color.DarkGray,
-                    shape = CircleShape,
-                ),
-                contentAlignment = Alignment.Center){
-                Icon(Icons.Default.Person, contentDescription = "PP")
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .shadow(2.dp, shape = CircleShape)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = CircleShape,
+                    ),
+                contentAlignment = Alignment.Center
+            ){
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "Profile",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
         }
         item{
             HeaderButton("All" , onClick = {
                 // handle click //
-            } ,  true,  modifier = Modifier , backgroundColor = Color.Gray)
+            } ,  true,  modifier = Modifier , backgroundColor = MaterialTheme.colorScheme.surfaceVariant)
         }
         item {
             HeaderButton("Wrapped" , onClick = {
                 // handle click //
-            } ,  true,  modifier = Modifier , backgroundColor = Color.Gray)
+            } ,  true,  modifier = Modifier , backgroundColor = MaterialTheme.colorScheme.surfaceVariant)
         }
         item {
             HeaderButton("Music" , onClick = {
                 // handle click //
-            } ,  true,  modifier = Modifier , backgroundColor = Color.Gray)
+            } ,  true,  modifier = Modifier , backgroundColor = MaterialTheme.colorScheme.surfaceVariant)
         }
         item {
             HeaderButton("Podcasts" , onClick = {
                 // handle click //
-            } ,  true,  modifier = Modifier , backgroundColor = Color.Gray)
+            } ,  true,  modifier = Modifier , backgroundColor = MaterialTheme.colorScheme.surfaceVariant)
         }
-
-
     }
 }
 @Composable
 fun SearchTopBar(text : String, onarrowClick: () -> Unit) {
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(52.dp)
             .fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        Row() {
-            Box(modifier = Modifier
-                .size(40.dp)
-                .background(
-                    color = Color.DarkGray,
-                    shape = CircleShape
-                )
-                .clickable { },
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Box(
+                modifier = Modifier
+                    .size(44.dp)
+                    .shadow(2.dp, shape = CircleShape)
+                    .background(
+                        color = MaterialTheme.colorScheme.surfaceVariant,
+                        shape = CircleShape
+                    )
+                    .clickable { },
                 contentAlignment = Alignment.Center,
-                )
+            )
             {
-                Icon(Icons.Default.Person, contentDescription = "PP")
+                Icon(
+                    Icons.Default.Person,
+                    contentDescription = "Profile",
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
             }
             Box(
                 modifier = Modifier
                     .fillMaxHeight()
-                    .padding(12.dp, 0.dp),
-                contentAlignment = Alignment.Center
+                    .padding(start = 16.dp),
+                contentAlignment = Alignment.CenterStart
             ) {
                 Text(
                     text = text,
-                    color = Color.Black,
-                    fontSize = 22.sp,
-                    fontWeight = FontWeight.Bold
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
                 )
             }
-
         }
     }
 }
@@ -134,24 +150,27 @@ fun SearchTopBar(text : String, onarrowClick: () -> Unit) {
 fun CommonHeaderBar(onarrowClick: ()-> Unit) {
     Box(
         modifier = Modifier
-            .height(48.dp)
+            .height(52.dp)
             .fillMaxWidth(),
         contentAlignment = Alignment.CenterStart
     ) {
-        Row() {
-            Box(modifier = Modifier
-                .size(40.dp)
+        Box(
+            modifier = Modifier
+                .size(44.dp)
+                .shadow(2.dp, shape = CircleShape)
                 .clickable { onarrowClick() }
                 .background(
-                    color = Color.DarkGray,
+                    color = MaterialTheme.colorScheme.surfaceVariant,
                     shape = CircleShape
                 ),
-                contentAlignment = Alignment.Center,
+            contentAlignment = Alignment.Center,
+        )
+        {
+            Icon(
+                Icons.Default.ArrowBack,
+                contentDescription = "Back",
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
             )
-            {
-                Icon(Icons.Default.ArrowBack, contentDescription = "PP")
-            }
-
         }
     }
 }
