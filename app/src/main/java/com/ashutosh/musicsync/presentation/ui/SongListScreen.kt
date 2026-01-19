@@ -1,5 +1,7 @@
 package com.ashutosh.musicsync.presentation.ui
 
+import android.content.Context
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -37,15 +39,19 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
+import com.ashutosh.musicsync.MusicService
 import com.ashutosh.musicsync.presentation.components.CustomHeader
 import com.ashutosh.musicsync.presentation.components.CustomSearchBar
 import com.ashutosh.musicsync.presentation.components.HeaderType
 import com.ashutosh.musicsync.presentation.components.MusicListTile
+import com.ashutosh.musicsync.presentation.notification.utils.MusicActions
 import com.ashutosh.musicsync.presentation.viewmodel.PlayerViewModel
 import com.ashutosh.musicsync.presentation.viewmodel.SongListViewModel
 import com.google.gson.Gson
@@ -60,6 +66,7 @@ fun SongListScreen(
     playerViewModel: PlayerViewModel = hiltViewModel()
 ) {
     var query by remember { mutableStateOf(songType) }
+    val context = LocalContext.current   // 🔥 ADD THIS LINE
 
     // ✅ Collect songs from ViewModel
     val musicList by viewModel.songs.collectAsState()
@@ -259,12 +266,30 @@ fun SongListScreen(
                         playerViewModel.playSongById(song.id)
                         // Also navigate to player screen
                         onsongClick(song.id)
+
+
                     }
                 )
             }
 
         }
     }
+
+fun startMusicService(
+    context: Context,
+    songUrl: String,
+    songName: String,
+    artist: String
+) {
+    val intent = Intent(context, MusicService::class.java).apply {
+        action = MusicActions.ACTION_PLAY
+        putExtra("URL", songUrl)
+        putExtra("SONG_NAME", songName)
+        putExtra("ARTIST", artist)
+    }
+
+    ContextCompat.startForegroundService(context, intent)
+}
 
 @Preview
 @Composable

@@ -1,6 +1,7 @@
 package com.ashutosh.musicsync.di
 
 import android.content.Context
+import androidx.media3.exoplayer.ExoPlayer
 import androidx.room.Room
 import com.ashutosh.musicsync.data.local.AppDatabase
 import com.ashutosh.musicsync.data.remote.ApiService
@@ -54,6 +55,14 @@ object NetworkModule {
 
     @Provides @Singleton
     fun provideApi(retrofit: Retrofit) = retrofit.create(ApiService::class.java)
+
+    @Provides
+    @Singleton
+    fun provideExoPlayer(
+        @ApplicationContext context: Context
+    ): ExoPlayer {
+        return ExoPlayer.Builder(context).build()
+    }
 }
 @Module
 @InstallIn(SingletonComponent::class)

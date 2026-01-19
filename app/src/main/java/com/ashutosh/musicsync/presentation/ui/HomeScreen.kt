@@ -93,7 +93,7 @@ fun HomeScreen(onclickCustombar: (songtype: String) -> Unit) {
                 columns = GridCells.Fixed(2),
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(240.dp),
+                    .height(260.dp),
                 contentPadding = PaddingValues(4.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)

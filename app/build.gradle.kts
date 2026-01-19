@@ -102,4 +102,5 @@ dependencies {
     implementation("androidx.media3:media3-exoplayer-dash:1.9.0")
     implementation("androidx.media3:media3-ui:1.9.0")
     implementation("androidx.media3:media3-ui-compose:1.9.0")
+    implementation("androidx.constraintlayout:constraintlayout:2.1.4")
 }

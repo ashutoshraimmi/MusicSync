@@ -1,17 +1,22 @@
 package com.ashutosh.musicsync.presentation.viewmodel
 
 import android.content.Context
+import android.content.Intent
 import android.util.Log
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.media3.common.MediaItem
 import androidx.media3.common.Player
 import androidx.media3.exoplayer.DefaultLivePlaybackSpeedControl
 import androidx.media3.exoplayer.ExoPlayer
+import com.ashutosh.musicsync.MusicService
 import com.ashutosh.musicsync.domain.model.Song
 import com.ashutosh.musicsync.domain.model.currentSong.CurrentSong
 import com.ashutosh.musicsync.domain.usecase.GetSongsDetailUseCase
 import com.ashutosh.musicsync.domain.usecase.SearchUseCase
+import com.ashutosh.musicsync.presentation.notification.utils.MusicActions
+import com.ashutosh.musicsync.presentation.ui.startMusicService
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ActivityContext
 import dagger.hilt.android.qualifiers.ApplicationContext
@@ -60,7 +65,7 @@ class PlayerViewModel @Inject constructor(
     // Queue management
     private val _queue = MutableStateFlow<List<Song>>(emptyList())
     val queue: StateFlow<List<Song>> = _queue.asStateFlow()
-    
+
     private var currentQueueIndex = -1
 
     private var job: Job? = null
@@ -73,20 +78,20 @@ class PlayerViewModel @Inject constructor(
             override fun onIsPlayingChanged(isPlaying: Boolean) {
                 _isPlaying.value = isPlaying
             }
-            
+
             override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
                 // When a song ends and next starts playing automatically
-                if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO || 
+                if (reason == Player.MEDIA_ITEM_TRANSITION_REASON_AUTO ||
                     reason == Player.MEDIA_ITEM_TRANSITION_REASON_SEEK) {
                     val currentIndex = exoPlayer?.currentMediaItemIndex ?: -1
                     if (currentIndex >= 0 && currentIndex < _queue.value.size) {
                         currentQueueIndex = currentIndex
                         val song = _queue.value[currentIndex]
-                        
+
                         // Immediately update UI with basic song info from queue
                         // This provides instant feedback while we load full details
                         _currentSong.value = song.toBasicCurrentSong()
-                        
+
                         // Load full details in background
                         song.pids?.let { pid ->
                             if (pid.isNotBlank()) {
@@ -104,7 +109,7 @@ class PlayerViewModel @Inject constructor(
                     }
                 }
             }
-            
+
             override fun onPlaybackStateChanged(playbackState: Int) {
                 // Handle end of playback
                 if (playbackState == Player.STATE_ENDED) {
@@ -121,7 +126,7 @@ class PlayerViewModel @Inject constructor(
             Log.e("Ashutoshh", "getDetails: Empty pid, skipping")
             return
         }
-        
+
         job?.cancel()
         job = viewModelScope.launch {
             try {
@@ -157,7 +162,7 @@ class PlayerViewModel @Inject constructor(
     fun setQueue(songs: List<Song>) {
         _queue.value = songs
         currentQueueIndex = -1
-        
+
         // Build MediaItem list from queue
         // Use audioUrl if available, otherwise we'll need to fetch vlink later
         val mediaItems = songs.mapNotNull { song ->
@@ -168,7 +173,7 @@ class PlayerViewModel @Inject constructor(
                     .build()
             }
         }
-        
+
         if (mediaItems.isNotEmpty()) {
             // Set media items without resetting position or starting playback
             exoPlayer?.setMediaItems(mediaItems, 0, 0) // startIndex=0, startPositionMs=0
@@ -181,7 +186,7 @@ class PlayerViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Play a specific song from the queue by index
      */
@@ -190,7 +195,7 @@ class PlayerViewModel @Inject constructor(
         if (index >= 0 && index < queue.size) {
             currentQueueIndex = index
             val song = queue[index]
-            
+
             // First, seek ExoPlayer to the correct position in the queue
             val mediaItemCount = exoPlayer?.mediaItemCount ?: 0
             if (mediaItemCount > index) {
@@ -203,11 +208,11 @@ class PlayerViewModel @Inject constructor(
                     play(url)
                 }
             }
-            
+
             // Immediately update UI with basic song info from queue
             // This provides instant feedback while we load full details
             _currentSong.value = song.toBasicCurrentSong()
-            
+
             // Load song details in background (for UI display)
             song.pids?.let { pid ->
                 job?.cancel()
@@ -218,7 +223,7 @@ class PlayerViewModel @Inject constructor(
                         // Only update if we got a valid result
                         if (result != null) {
                             _currentSong.value = result
-                            
+
                             // If we got a better URL (vlink), update the MediaItem
                             result.vlink?.let { vlink ->
                                 if (mediaItemCount > index) {
@@ -238,7 +243,7 @@ class PlayerViewModel @Inject constructor(
             }
         }
     }
-    
+
     /**
      * Play a song by its ID from the queue
      */
@@ -255,6 +260,26 @@ class PlayerViewModel @Inject constructor(
                 song.audioUrl?.let { url ->
                     play(url)
                 }
+                if (!song.audioUrl.isNullOrEmpty()) {
+                    fun startMusicService(
+                        context: Context,
+                        url: String,
+                        song: String,
+                        artist: String
+                    ) {
+                        val intent = Intent(context, MusicService::class.java).apply {
+                            action = MusicActions.ACTION_PLAY
+                            putExtra("URL", url)
+                            putExtra("SONG_NAME", song)
+                            putExtra("ARTIST", artist)
+                        }
+
+                        ContextCompat.startForegroundService(context, intent)
+                    }
+
+                } else {
+                    Log.e("SongListScreen", "Audio URL is null for song: ${song.title}")
+                }
             }
         }
     }
@@ -270,38 +295,38 @@ class PlayerViewModel @Inject constructor(
 
         exoPlayer?.play()
     }
-    
+
     /**
      * Play next song in queue
      */
     fun playNext() {
         val queue = _queue.value
         if (queue.isEmpty()) return
-        
+
         val nextIndex = if (currentQueueIndex < 0) {
             0
         } else {
             (currentQueueIndex + 1).coerceAtMost(queue.size - 1)
         }
-        
+
         if (nextIndex < queue.size) {
             playFromQueue(nextIndex)
         }
     }
-    
+
     /**
      * Play previous song in queue
      */
     fun playPrevious() {
         val queue = _queue.value
         if (queue.isEmpty()) return
-        
+
         val prevIndex = if (currentQueueIndex <= 0) {
             0
         } else {
             currentQueueIndex - 1
         }
-        
+
         playFromQueue(prevIndex)
     }
 
